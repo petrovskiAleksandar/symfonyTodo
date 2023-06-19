@@ -2,60 +2,71 @@
 
 namespace App\Entity;
 
-use App\Repository\TodoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TodoRepository::class)]
+/** 
+ * @ORM\Entity()
+ */
 class Todo
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    /** 
+     *@ORM\Id()
+     *@ORM\GeneratedValue()
+     *@ORM\Column(type="integer")
+     */
+    private int $id;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $name = null;
+    /** 
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $name = '';
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $descritpion = null;
+    /** 
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $description = '';
 
-    #[ORM\Column]
-    private ?bool $status = null;
+    /** 
+     * @ORM\Column(type="boolean")
+     */
+    private bool $status = false;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    /** 
+     * @ORM\Column(type="datetime")
+     */
     private ?\DateTimeInterface $createdOn = null;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name)
+    public function setName(string $name)
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getDescritpion(): ?string
+    public function getDescription(): string
     {
-        return $this->descritpion;
+        return $this->description;
     }
 
-    public function setDescritpion(?string $descritpion)
+    public function setDescription(string $description)
     {
-        $this->descritpion = $descritpion;
+        $this->description = $description;
 
         return $this;
     }
 
-    public function isStatus(): ?bool
+    public function isStatus(): bool
     {
         return $this->status;
     }

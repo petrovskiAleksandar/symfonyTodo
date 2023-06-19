@@ -4,4 +4,10 @@ index:
 
 save_todo:
    path: /save
-   controller: App\Controller\ToDoController::saveTodo
+   methods: POST
+   controller: App\Controller\ToDoController::post
+
+edit_todo:
+   path: /save/{id}
+   methods: PATCH
+   controller: App\Controller\ToDoController::patch

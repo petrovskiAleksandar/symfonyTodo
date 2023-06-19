@@ -2,45 +2,61 @@
 namespace App\Controller;
 
 use App\Entity\Todo;
-use App\Repository\TodoRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Request;
 
 class ToDoController extends AbstractController {
-    public $todoRepository;
-    public function __construct(TodoRepository $todoRepository)
+    public $entityManager;
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->todoRepository = $todoRepository;        
+        $this->entityManager = $entityManager;        
     }
 
     public function list ()
     {
+        $todos = $this->entityManager->getRepository(Todo::class)->findAll();
 
-        return $this->render('/Todos/List/list_to_dos.html.twig', [
-            'notes' => [
-                [
-                    'noteText' => 'Go to work',
-                    'status' => 'not done'
-                ],
-                [
-                    'noteText' => 'Go shopping',
-                    'status' => 'done'
-                ],
-                [
-                    'noteText' => 'Work out',
-                    'status' => 'not done'
-                ]
-            ]
+        return $this->render('/Todos/index.html.twig', [
+            'todos' => $todos
         ]);
     }
 
-    public function saveTodo () {
-        $product = new Todo;
+    public function post (Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
 
-        $product->setName('Wash');
-        $product->setDescritpion('Need to wash my car today');
+        if (
+            !array_key_exists('name', $data) ||
+            !array_key_exists('description', $data) ||
+            strlen($data['name']) === 0 ||
+            strlen($data['description']) === 0
+        ) {
+            throw new BadRequestException('Bad request!');
+        }
+
+        $product = new Todo();
+
+        $product->setName($data['name']);
+        $product->setDescription($data['description']);
         $product->setStatus(false);
+        $product->setCreatedOn(new \DateTime());
 
-        $this->todoRepository->save($product);
+        $this->entityManager->persist($product);
+        $this->entityManager->flush();
+
+        return $this->json(['done' => true]);
+    }
+
+    public function patch (Request $request, $id) {
+        $data = json_decode($request->getContent(), true);
+
+        $todo = $this->entityManager->getRepository(Todo::class)->findOneBy(['id' => $id]);
+
+        $todo->setStatus($data['status']);
+
+        $this->entityManager->flush();
 
         return $this->json(['done' => true]);
     }
