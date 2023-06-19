@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+{% block main_container %}
+    <body>
+        <h1>Hello world!</h1>
+        {% for note in notes %}
+            {{ note.noteText }} <br>
+
+        {% endfor %}
+    </body>
+{% endblock %}
+
+</html>

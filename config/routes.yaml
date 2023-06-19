@@ -1,0 +1,7 @@
+index:
+   path: /
+   controller: App\Controller\ToDoController::list
+
+save_todo:
+   path: /save
+   controller: App\Controller\ToDoController::saveTodo
