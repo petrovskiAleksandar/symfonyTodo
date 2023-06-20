@@ -2,12 +2,16 @@ index:
    path: /
    controller: App\Controller\ToDoController::list
 
-save_todo:
-   path: /save
-   methods: POST
-   controller: App\Controller\ToDoController::post
+show_todo:
+   path: /todo/{id}
+   controller: App\Controller\ToDoController::show
 
 edit_todo:
    path: /save/{id}
    methods: PATCH
    controller: App\Controller\ToDoController::patch
+
+delete_todo:
+   path: /delete/{id}
+   methods: DELETE
+   controller: App\Controller\ToDoController::delete

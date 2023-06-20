@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /** 
@@ -35,7 +34,12 @@ class Todo
     /** 
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $createdOn = null;
+    private \DateTimeInterface $createdOn;
+    
+    public function __construct()
+    {
+        $this->createdOn = new \DateTime();
+    }
 
     public function getId(): int
     {
@@ -78,7 +82,7 @@ class Todo
         return $this;
     }
 
-    public function getCreatedOn(): ?\DateTimeInterface
+    public function getCreatedOn(): \DateTimeInterface
     {
         return $this->createdOn;
     }

@@ -1,59 +1,152 @@
+<html>
+    <body>
+        {% if todos and todos|length %}
+            <div class="todo-container">
+            {% for todo in todos %}
+                    <div class="todo-block">
+                        <div class="todo-content">
+                            <h1 id="todo-name-{{ todo.id }}">{{ todo.name }}</h1>
+                            <p id="todo-description-{{ todo.id }}">{{ todo.description }}</p>
+                            <p style="color: #d4dae4">{{ todo.createdOn|date("m/d/Y") }}</p>
+                        </div>
+                        <div class="todo-actions">
+                            <a class="edit-todo-btn" href="todo/{{ todo.id }}">Edit todo</a>
+                            <button class="delete-todo-btn" onclick="handleDelete({{ todo.id }})">Delete todo</button>
+                            <input type="checkbox" {% if todo.status %} checked {% endif %} onclick="handleCheck(event, {{ todo.id }})">
+                        </div> 
+                    </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center">
+                <h1>No todos found!</h1>
+            </div>
+        {% endif %}
+        <button id="show-modal-btn" onclick="handleOpenModal()">Add new</button>
+        <dialog id="add-new-modal">
+            <span id="close-modal" onclick="handleCloseModal()">X</span>
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button id="add-new-btn" type="submit">Add!</button>
+            {{ form_end(form) }}
+        </dialog>
+    </body>
+</html>
+
+
 <script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+
     function handleCheck (e, id) {
-        fetch(`index.php/save/${id}`, {
+        fetch(`save/${id}`, {
             method: 'PATCH',
             body: JSON.stringify({
-                status: e.target.checked
+                status: e.target.checked,
+                name: document.getElementById(`todo-name-${id}`).innerText,
+                description: document.getElementById(`todo-description-${id}`).innerText
             }),
             headers: {
                 'Content-type': 'application/json'
             }
         })
     }
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('show-modal-btn').addEventListener('click', () => {
-            document.getElementById('add-new-modal').showModal();
-        })
 
-        document.getElementById('add-new-btn').addEventListener('click', () => {
-            fetch('/index.php/save', {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: document.getElementById('todo-name').value,
-                    description: document.getElementById('todo-description').value,
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            document.getElementById('add-new-modal').close();
-        });
+    function handleDelete (id) {
+        fetch(`delete/${id}`, { method: 'DELETE' });
+    }
 
+    function handleCloseModal () {
+        document.getElementById('add-new-modal').close();
+    }
 
-    });
-
+    function handleOpenModal () {
+        document.getElementById('add-new-modal').showModal();
+    }
 </script>
 
-<html>
-    <body>
-        {% if todos and todos|length %}
-            {% for todo in todos %}
-                <h1>{{ todo.name }}</h1>
-                <p>{{ todo.description }}</p>
-                <input type="checkbox" {% if todo.status %} checked {% endif %} onclick="handleCheck(event, {{ todo.id }})">
-            {% endfor %}
-        {% else %}
-            <div style="text-center">
-                <h1>No todos found!</h1>
-            </div>
-        {% endif %}
-        <button id="show-modal-btn">Add new todo</button>
-        <dialog id="add-new-modal">
-            <label>Name for todo</label><br>
-            <input id="todo-name"/><br>
-            <label>description for todo</label><br>
-            <textarea id="todo-description"></textarea><br>
-            <button id="add-new-btn">Add!</button>
-        </dialog>
-    </body>
-</html>
+<style>
+body {
+    font-family: sans-serif;
+}
+
+#show-modal-btn {
+    border: none;
+    border-radius: 3px;
+    background-color: #03f;
+    color: #fff;
+    display: flex;
+    font-size: 18px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+.delete-todo-btn {
+    display: flex;
+    border: none;
+    border-radius: 3px;
+    background-color: #bd1937;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.edit-todo-btn {
+    display: flex;
+    border: none;
+    border-radius: 3px;
+    background-color: #d6dae4;
+    color: #030303;
+    font-size: 14px;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-decoration: none;
+}
+
+.todo-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.todo-block {
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    max-width: 500px;
+    padding: 30px;
+    width: 100%;
+}
+
+.todo-actions {
+    display: flex;
+    flex-direction: column;
+}
+
+#close-modal {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+#add-new-modal {
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 30px;
+    width: 600px;
+}
+
+#add-new-modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+</style>

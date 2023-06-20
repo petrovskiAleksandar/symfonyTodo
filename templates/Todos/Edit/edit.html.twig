@@ -2,8 +2,70 @@
 <html>
 {% block main_container %}
     <body>
-        <h1>Hello world!</h1>
+        <a id="go-back-btn" href="/"><- Go Back !</a>
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button id="edit-btn" type="submit">Save</button>
+        {{ form_end(form) }}
     </body>
 {% endblock %}
-
 </html>
+
+<style>
+body {
+    align-items:center;
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    height: 100vh;
+    justify-content: center;
+    text-align: center;
+}
+
+div {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+input[type="text"] {
+    margin-bottom: 15px;
+    padding: 10px 0;
+    width: 100%;
+}
+
+#todo {
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 30px;
+    width: 500px;
+}
+
+#todo_status {
+    margin-bottom: 15px;
+}
+
+#edit-btn {
+    border: none;
+    boder-radius: 3px;
+    background-color: #03f;
+    color: #fff;
+    padding: 10px;
+    margin-top: 15px;
+    width: 100%;
+
+}
+
+#go-back-btn {
+    border: none;
+    boder-radius: 3px;
+    background-color: #03f;
+    color: #fff;
+    left: 5px;
+    margin-top: 15px;
+    padding: 10px;
+    position: absolute;
+    top: 5px;
+}
+</style>
